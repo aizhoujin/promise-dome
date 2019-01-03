@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="start" style="width: 100px;height: 100px;background: red;"></div>
+</body>
+<script src="jquery.min.js"></script>
+<script>
+    document.getElementById('start').addEventListener('click', start, false);
+
+    function start() {
+        // 响应事件，进行相应得操作
+        // jquery on 监听
+        // $('#start').on('click', start)
+    }
+
+    // 比较常见的有 ajax;
+    $.ajax({
+        url: 'www.aizhoujin.top/',
+        method: 'get',
+        success: function (res) {
+            // 这里可以监听res返回的数据做回掉逻辑的处理;
+        }
+    })
+
+    // 或者在页面加载完毕后回调
+    $(function () {
+        // 页面结构加载完成， 做回调逻辑处理;
+
+    })
+
+    /*
+    *  第一步 ： 找到北京得id
+    *  第二步 : 根据北京得id --> 找到北京公司的 id
+    *  第三步 : 根据北京公司的 id --> 找到公司的详情
+    *   目的 : 模拟链式调用、回调地狱
+    * */
+
+    // 请求第一个API，地址在北京的公司的id
+    $.ajax({
+        url: 'www.aizhoujin.top/lagou/city',
+        dataType: 'JSON',
+        success: function (resCity) {
+            let fintCityId = resCity.filter(item => {
+                if (item.id == 'c1') {
+                    return item;
+                }
+            })[0].id;
+
+            // 请求第二个API；根据上一个返回的在北京公司的id “findCityId” , 找到在北京公司的第一家公司的id；
+            $.ajax({
+                url: 'www.aizhoujin.top/lagou/postion',
+                dataType: 'json',
+                success: function (resPostion) {
+                    let fintPostionId = resPostion.filter(item => {
+                        if (item.cityId == fintCityId) {
+                            return item;
+                        }
+                    })[0].id;
+
+                    // 请求第三个API，根据上一个API的id (findPostionId) 找到具体公司，查看详情
+                    $.ajax({
+                        url: 'www.aizhoujin.top/lagou.company',
+                        dataType: 'json',
+                        success: function (resCompany) {
+                            let companyInfo = resCompany.filter(item => {
+                                if (fintPostionId == item.id) {
+                                    return item;
+                                }
+                            })[0];
+                            console.log(companyInfo);
+                        }
+                    })
+                }
+            })
+        }
+    })
+
+
+    new Promise(function (resolve, reject) {
+        resolve('成功'); // 数据处理完成
+        reject('失败'); // 数据处理出错
+    }.then((res) => {
+            console.log(res); // 成功
+        },
+        (err) => {
+            console.log(err); //失败
+        }))
+
+    new Promise(resolve => {
+        setTimeout(() => {
+            resolve('hello');
+        }, 2000);
+    }).then(res => {
+        console.log(res);
+    })
+
+
+
+    new Promise(resolve => {
+        setTimeout(() => {
+            resolve('hello');
+        }, 2000)
+    }).then(val => {
+        console.log(val); // 参数val = 'hellp'
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve('world');
+            }, 2000)
+        })
+    }).then(val => {
+        console.log(val) // 参数val = 'world'
+    })
+
+    let pro = new Promise(resolve => {
+        setTimeout(() => {
+            resolve('hello world');
+        }, 2000)
+    })
+    setTimeout(() => {
+        pro.then(value => {
+            console.log(value); // hello world
+        })
+    }, 2000)
+
+
+    new Promise(resolve => {
+        console.log('Step 1');
+        setTimeout(() => {
+            resolve('100');
+        }, 1000)
+    }).then(value => { // value = 100
+        return new Promise(resolve => {
+            console.log('step-1-1');
+            setTimeout(() => {
+                resolve('110');
+            }, 1000)
+        }).then(value => { //
+
+        })
+    })
+</script>
+</html>

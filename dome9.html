@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Promise 实例</title>
+    <script src="jquery.min.js"></script>
+</head>
+<body>
+
+</body>
+<script>
+    // Promise 写法
+
+    // 第一步 : 获取城市列表
+    const cityList = new Promise((resolve, reject) => {
+        $.ajax({
+            url: 'www.aizhoujin.top/lagou/city',
+            dataType: 'JSON',
+            success: function (res) {
+                resolve(res);
+            }
+        })
+    })
+
+    // 第二步：找到城市是北京的id;
+    cityList.then(res => {
+        let findCityId = res.filter(item => {
+            if (item.id == 'c1') {
+                return item
+            }
+        })[0].id;
+
+        findCompanyId().then(res => {
+            // 第三步(2): 根据北京的id --> 找到北京公司的 id
+            let findPostionId = res.filter(item => {
+                if (item.cityId == findCityId) {
+                    return item;
+                }
+            })[0].id;
+            companyInfo(findPostionId);
+        })
+    })
+
+    // 第三步(1): 根据北京的id --> 找到北京公司的id
+    function findCompanyId() {
+        let comId = new Promise((resolve, reject) => {
+            $.ajax({
+                url: 'www.aizhoujin.top/postion',
+                dataType: 'json',
+                success: function (res) {
+                    resolve(res);
+                }
+            })
+        })
+        return comId;
+    }
+
+    // 第四步: 根据上一个API的id(findPostionId)找到具体公司，然后返回公司详情
+    function companyInfo(id) {
+        let companyList = new Promise((resolve, reject) => {
+            $.ajax({
+                url: 'www.aizhoujin.top/company',
+                dataType: 'json',
+                success: function (res) {
+                    let comInfo = res.filter(item => {
+                        if (id == item.id){
+                            return item
+                        }
+                    })[0];
+                    console.log(comInfo);
+                }
+            })
+        })
+    }
+
+</script>
+</html>

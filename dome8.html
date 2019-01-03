@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Promise.race()</title>
+</head>
+<body>
+
+</body>
+<script>
+    let p1 = new Promise(resolve => {
+        setTimeout(() => {
+            resolve('I\`m p1');
+        }, 1000);
+    })
+
+    let p2 = new Promise(resolve => {
+        setTimeout(() => {
+            resolve('I\`m p2');
+        }, 2000)
+    })
+
+    Promise.race([p1,p2])
+        .then(value => {
+            console.log(value);
+        })
+
+</script>
+</html>

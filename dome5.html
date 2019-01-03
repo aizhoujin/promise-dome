@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>catch() + then()</title>
+</head>
+<body>
+
+</body>
+<script>
+    console.log('here we go...')
+    new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, 2000)
+    })
+        .then(() => {
+            console.log('start');
+            throw new Error('test error');
+        })
+        .catch(err => {
+            console.log('I catch:', err);
+        })
+        .then(() => {
+            console.log('arrive here');
+        })
+        .then(() => {
+            console.log('...and here');
+        })
+        .catch(err => {
+            console.log('No, I catch:', err)
+        })
+</script>
+</html>

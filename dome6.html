@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>chcat + then (2)</title>
+</head>
+<body>
+
+</body>
+<script>
+    console.log('heoe we go..')
+    new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, 2000)
+    })
+        .then(() => {
+            console.log('start');
+            throw new Error('test error');
+        })
+        .catch(err => {
+            console.log('1 catch: ', err);
+            throw new Error('another error');
+        })
+        .then(() => {
+            console.log('arrlve here');
+        })
+        .then(() => {
+            console.log('...and here');
+        })
+        .catch(err => {
+            console.log('No, I catch', err)
+        })
+</script>
+</html>
